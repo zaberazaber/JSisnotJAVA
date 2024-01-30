@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f2f2f2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 50px;
+    }
+
+    h2 {
+      color: #333;
+    }
+
+    #taskInput {
+      width: 60%;
+      padding: 8px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    #addTaskBtn {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background-color 0.3s;
+    }
+
+    #taskList {
+      list-style-type: none;
+      padding: 0;
+      text-align: left;
+      width: 60%;
+    }
+
+    .task {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: white;
+      padding: 10px;
+      border: 1px solid #ddd;
+      margin-bottom: 10px;
+      border-radius: 4px;
+      transition: background-color 0.3s;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+   .task.completed {
+    background: rgb(246,248,240);
+background: -moz-linear-gradient(115deg, rgba(246,248,240,1) 21%, rgba(44,177,19,0.9423993107985381) 62%);
+background: -webkit-linear-gradient(115deg, rgba(246,248,240,1) 21%, rgba(44,177,19,0.9423993107985381) 62%);
+background: linear-gradient(115deg, rgba(246,248,240,1) 21%, rgba(44,177,19,0.9423993107985381) 62%);
+filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#f6f8f0",endColorstr="#2cb113",GradientType=1);
+    }
+
+
+    .task:hover {
+      background-color: #f9f9f9;
+    }
+
+    .task input {
+      margin-right: 10px;
+    }
+
+    .deleteButton {
+      background-color: #f44336;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 14px;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background-color 0.3s;
+    }
+
+    .deleteButton:hover {
+      background-color: #d32f2f;
+    }
+
+    /* neumorphic checkbox */
+    .toggle {
+  isolation: isolate;
+  position: relative;
+  height: 30px;
+  width: 60px;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow:
+    -8px -4px 8px 0px #ffffff,
+    8px 4px 12px 0px #d1d9e6,
+    4px 4px 4px 0px #d1d9e6 inset,
+    -4px -4px 4px 0px #ffffff inset;
+}
+
+ .toggle-state {
+  display: none;
+} 
+
+.indicator {
+  height: 100%;
+  width: 200%;
+  background: #ecf0f3;
+  border-radius: 15px;
+  transform: translate3d(-75%, 0, 0);
+  transition: transform 0.4s cubic-bezier(0.85, 0.05, 0.18, 1.35);
+  box-shadow:
+    -8px -4px 8px 0px #ffffff,
+    8px 4px 12px 0px #d1d9e6;
+}
+
+.toggle-state:checked ~ .indicator {
+  transform: translate3d(25%, 0, 0);
+}
+  </style>
+  <title>Todo List</title>
+</head>
+<body>
+
+  <h2>Todo List</h2>
+
+  <div>
+    <input type="text" id="taskInput" placeholder="Add a new task">
+    <button id="addTaskBtn" onclick="addTask()">Add Task</button>
+  </div>
+
+  <ul id="taskList"></ul>
+
+  <script>
+    let todoList = [];
+
+    function showTasks() {
+      const taskListElement = document.getElementById('taskList');
+      taskListElement.innerHTML = '';
+
+      todoList.forEach((task, index) => {
+        const completedClass = task.completed ? 'completed' : '';
+        
+        taskListElement.innerHTML += `
+          <li class="task ${completedClass}" style="animation: fadeIn 0.5s ease-in-out;">
+            <label class="label">
+            <div class="toggle">
+                <input type="checkbox" class="toggle-state" ${task.completed ? 'checked' : ''} onchange="completeTask(${index})">
+            <div class="indicator"></div>
+            </div>
+            </label>
+            <span>${task.description}</span>
+            <button class="deleteButton" onclick="deleteTask(${index})">Delete</button>
+          </li>
+        `;
+      });
+    }
+
+    function addTask() {
+      const taskInput = document.getElementById('taskInput');
+      const description = taskInput.value.trim();
+
+      if (description !== '') {
+        todoList.push({ description, completed: false });
+        taskInput.value = '';
+        showTasks();
+      }
+    }
+
+    function deleteTask(index) {
+      if (index >= 0 && index < todoList.length) {
+        todoList.splice(index, 1);
+        showTasks();
+      }
+    }
+
+    function completeTask(index) {
+      if (index >= 0 && index < todoList.length) {
+        todoList[index].completed = !todoList[index].completed;
+        showTasks();
+      }
+    }
+
+    // Initial tasks
+    addTask('Learn HTML');
+    addTask('Practice CSS');
+    addTask('Master JavaScript');
+    showTasks();
+  </script>
+
+</body>
+</html>
